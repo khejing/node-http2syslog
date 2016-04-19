@@ -1,4 +1,4 @@
-= node-http2syslog
+# node-http2syslog
 
 node-http2syslog is a HTTP to syslog proxy written in Node.js.
 
