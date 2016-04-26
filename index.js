@@ -154,7 +154,9 @@ var client_handler = function (request, response) {
                     response.end();
 		    return;
                  }
-
+                response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+                response.setHeader('Access-Control-Allow-Credentials', true);
+                response.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
                 // notify user
                 response.writeHead(201, {"Content-Type": "application/json"});
                 response.write("{ 'response': 'true', 'message': 'info: event received', 'eventstamp': "+eventstamp+"  }\n");
