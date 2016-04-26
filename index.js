@@ -103,10 +103,9 @@ var client_handler = function (request, response) {
 
         if(request.method === 'OPTIONS'){
             response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
-            response.setHeader('Access-Control-Allow-Credentials', true);
             response.setHeader('Access-Control-Allow-Methods', request.headers['access-control-request-method']);
             response.setHeader('Access-Control-Allow-Headers', request.headers['access-control-request-headers']);
-            response.writeHead(200);
+            response.statusCode = 200;
             response.end();
             return;
         }
@@ -164,6 +163,7 @@ var client_handler = function (request, response) {
 		    return;
                  }
                 // notify user
+                response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
                 response.writeHead(201, {"Content-Type": "application/json"});
                 response.write("{ 'response': 'true', 'message': 'info: event received', 'eventstamp': "+eventstamp+"  }\n");
                 response.end();
