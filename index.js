@@ -168,7 +168,7 @@ var client_handler = function (request, response) {
 }
 
 // Start listening as HTTP server
-lodge = http.createServer(client_handler).listen(8080);
+lodge = http.createServer(client_handler).listen(8081);
 
 var privateKey,certificate;
 
@@ -186,4 +186,4 @@ var credentials = crypto.createCredentials({key: privateKey, cert: certificate})
 // Start listening as HTTPS server
 var server = http.createServer(client_handler);
 server.setSecure(credentials);
-server.listen(8081);
+server.listen(8082);
