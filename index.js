@@ -104,10 +104,10 @@ var client_handler = function (request, response) {
         if(request.method === 'OPTIONS'){
             response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
             response.setHeader('Access-Control-Allow-Credentials', true);
-            response.setHeader('Access-Control-Allow-Methods', request.headers['Access-Control-Request-Method']);
-            response.setHeader('Access-Control-Allow-Headers', request.headers['Access-Control-Request-Headers']);
+            response.setHeader('Access-Control-Allow-Methods', request.headers['access-control-request-method']);
+            response.setHeader('Access-Control-Allow-Headers', request.headers['access-control-request-headers']);
             response.writeHead(200);
-            resposne.end();
+            response.end();
             return;
         }
         // check path
