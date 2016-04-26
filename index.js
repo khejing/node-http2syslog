@@ -101,6 +101,15 @@ var client_handler = function (request, response) {
     request.addListener("end", function() {
         var keyrequest;
 
+        if(request.method === 'OPTIONS'){
+            response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+            response.setHeader('Access-Control-Allow-Credentials', true);
+            response.setHeader('Access-Control-Allow-Methods', request.headers['Access-Control-Request-Method']);
+            response.setHeader('Access-Control-Allow-Headers', request.headers['Access-Control-Request-Headers']);
+            response.writeHead(200);
+            resposne.end();
+            return;
+        }
         // check path
         pathname = url.parse(request.url, true).pathname; 
         if (pathname.match('/inputs/[a-zA-Z0-9-]+/?') === null) {
@@ -154,9 +163,6 @@ var client_handler = function (request, response) {
                     response.end();
 		    return;
                  }
-                response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
-                response.setHeader('Access-Control-Allow-Credentials', true);
-                response.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
                 // notify user
                 response.writeHead(201, {"Content-Type": "application/json"});
                 response.write("{ 'response': 'true', 'message': 'info: event received', 'eventstamp': "+eventstamp+"  }\n");
