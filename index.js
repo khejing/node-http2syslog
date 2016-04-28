@@ -80,7 +80,8 @@ var forward_event = function(eventstamp, remoteip, content) {
     var logs = obj.Log4js, i = 0;
     for(; i < logs.length; i++){
       // craft header
-      var header = eventstamp+" "+remoteip+" "+JSON.stringify(log.LoggingEvent)+"\n";
+      var log = logs[i].LoggingEvent;
+      var header = eventstamp+" "+remoteip+" "+log.logger+":"+log.message)+"\n";
       if(send2syslog(header) === -1){
         return -1;
       }
