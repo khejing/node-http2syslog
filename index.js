@@ -76,10 +76,15 @@ function send2syslog(header){
 
 // write event to syslog server 
 var forward_event = function(eventstamp, remoteip, content) {
-    // craft header
-    var header = eventstamp+" "+remoteip+" "+content+"\n";
-    log("header is "+header);
-    return send2syslog(header);
+    var obj = JSON.parse(content);
+    var logs = obj.Log4js, i = 0;
+    for(; i < logs.length; i++){
+      // craft header
+      var header = eventstamp+" "+remoteip+" "+JSON.stringify(log.LoggingEvent)+"\n";
+      if(send2syslog(header) === -1){
+        return -1;
+      }
+    };
 };
 
 // key hash store
