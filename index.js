@@ -1,6 +1,5 @@
 // includes
-var sys = require("sys"),
-    http = require("http"),
+var http = require("http"),
     net = require("net"),
     url = require("url");
     dgram = require('dgram');
@@ -15,7 +14,7 @@ var udp = false;
 
 // log to local console 
 var log = function(content) {
-    sys.log(content);
+    console.log(content);
 };
 
 // events handling
@@ -47,11 +46,7 @@ process.addListener("uncaughtException", function (err) {
     if (++exception_count == 4) process.exit(0);
 });
 
-// write event to syslog server 
-var forward_event = function(eventstamp, remoteip, content) {
-    // craft header
-    var header = eventstamp+" "+remoteip+" "+content+"\n";
-   
+function send2syslog(header){
     // Check if we are not using UDP 
     if (!udp) {
         if (syslogclient.readyState === "open") {
@@ -75,8 +70,16 @@ var forward_event = function(eventstamp, remoteip, content) {
                 // log("Wrote " + bytes + " bytes to UDP socket.");
                 return;
             }
-	);
+	      );
    }
+}
+
+// write event to syslog server 
+var forward_event = function(eventstamp, remoteip, content) {
+    // craft header
+    var header = eventstamp+" "+remoteip+" "+content+"\n";
+    log("header is "+header);
+    return send2syslog(header);
 };
 
 // key hash store
