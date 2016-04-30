@@ -81,7 +81,9 @@ var forward_event = function(eventstamp, remoteip, content) {
     for(; i < logs.length; i++){
       // craft header
       var log = logs[i].LoggingEvent;
-      var header = eventstamp+" "+remoteip+" "+log.logger+":"+log.message+"\n";
+      var tag = log.logger;
+      delete log.logger;
+      var header = eventstamp+" "+remoteip+" "+tag+":"+JSON.stringify(log)+"\n";
       if(send2syslog(header) === -1){
         return -1;
       }
