@@ -76,7 +76,13 @@ function send2syslog(header){
 
 // write event to syslog server 
 var forward_event = function(eventstamp, remoteip, content) {
-    var obj = JSON.parse(content);
+    var obj;
+    try{
+        obj = JSON.parse(content);
+    }catch(e){
+        log("recv invalid JSON string: "+content);
+        return -1;
+    }
     var logs = obj.Log4js, i = 0;
     for(; i < logs.length; i++){
       // craft header
