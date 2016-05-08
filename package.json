@@ -17,5 +17,7 @@
     "url": "https://github.com/khejing/node-http2syslog/issues"
   },
   "homepage": "https://github.com/khejing/node-http2syslog#readme",
-  "dependencies": {}
+  "dependencies": {
+    "node-logger": "github:khejing/node-logger"
+  }
 }
