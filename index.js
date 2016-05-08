@@ -4,36 +4,15 @@ var http = require("http"),
     url = require("url");
     dgram = require('dgram');
     crypto = require('crypto');
-    fs = require('fs');
-
-// network objects
-var syslogclient;
-
-// TCP or UDP, we use a fall back approach and prefer TCP first and then UDP
-var udp = false;
+    fs = require('fs'),
+    logger = require('node-logger');
 
 // log to local console 
 var log = function(content) {
     console.log(content);
 };
 
-// events handling
-var EventEmitter = require('events').EventEmitter;
-var syslogstart = new EventEmitter();
-syslogstart.addListener('start', function() {
-    if (syslogclient === undefined || syslogclient.readyState != "open") { 
-	       syslogclient = net.createConnection(514, host='127.0.0.1');
-       	       log("notice: starting connection to syslog server");
-    } else {
-       log("notice: syslog server connection already established");
-    }
-
-    syslogclient.setNoDelay(noDelay=true);
-});
-
-// open the tcp connection to the syslog server
- syslogstart.emit('start');
-
+var exception_count = 0;
 // handle exceptions for great udp justice
 process.addListener("uncaughtException", function (err) {
     log("error: caught an exception - " + err);
@@ -46,36 +25,8 @@ process.addListener("uncaughtException", function (err) {
     if (++exception_count == 4) process.exit(0);
 });
 
-function send2syslog(header){
-    // Check if we are not using UDP 
-    if (!udp) {
-        if (syslogclient.readyState === "open") {
-            // log("writing to syslog server: " + header.slice(0,80) + "...");
-            syslogclient.write(header);
-        } else {
-            // try to restart the connection, but tell the client to go away
-            log("notice: issuing syslog server restart");
-            syslogstart.emit('start');
-            return -1;
-        }
-    }	    
-    else {
-        var client = dgram.createSocket("udp4");
-        var message = new Buffer(header);
-        client.send(message, 0, message.length, 514,"127.0.0.1",
-            function (err, bytes) {
-                if (err) {
-                    throw err;
-                }
-                // log("Wrote " + bytes + " bytes to UDP socket.");
-                return;
-            }
-	      );
-   }
-}
-
 // write event to syslog server 
-var forward_event = function(eventstamp, remoteip, content) {
+var forward_event = function(remoteip, content) {
     var obj;
     try{
         obj = JSON.parse(content);
@@ -87,10 +38,9 @@ var forward_event = function(eventstamp, remoteip, content) {
     for(; i < logs.length; i++){
       // craft header
       var log = logs[i].LoggingEvent;
-      var tag = log.logger;
+      log.appId = log.logger;
       delete log.logger;
-      var header = eventstamp+" "+remoteip+" "+tag+":"+JSON.stringify(log)+"\n";
-      if(send2syslog(header) === -1){
+      if(logger.log(log.level, Object.assign(log, {host: remoteip})) === -1){
         return -1;
       }
     };
@@ -161,16 +111,7 @@ var client_handler = function (request, response) {
 		    return;
                 } 
             } else {
-                // craft a date syslog will recognize  
-                var dt = new Date();
-                var hours = dt.getHours();
-                var minutes = dt.getMinutes();
-                var seconds = dt.getSeconds();
-                var month = dt.getMonth();
-                var day = dt.getDate();
-                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                var eventstamp = months[month] + " " + day + " " + hours + ":" + minutes + ":" + seconds;
-                fc = forward_event(eventstamp, remoteip, content);
+                fc = forward_event(remoteip, content);
 
                 // if event wasn't forwarded, warn
                 if (fc == -1) {
