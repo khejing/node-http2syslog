@@ -5,7 +5,8 @@ var http = require("http"),
     dgram = require('dgram');
     crypto = require('crypto');
     fs = require('fs'),
-    logger = require('node-logger');
+    logger = require('node-logger'),
+    assign = require('lodash/assign.js');
 
 // log to local console 
 var log = function(content) {
@@ -40,7 +41,7 @@ var forward_event = function(remoteip, content) {
       var log = logs[i].LoggingEvent;
       log.appId = log.logger;
       delete log.logger;
-      if(logger.log(log.level, Object.assign(log, {host: remoteip})) === -1){
+      if(logger.log(log.level, assign(log, {host: remoteip})) === -1){
         return -1;
       }
     };
