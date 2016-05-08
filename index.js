@@ -116,15 +116,15 @@ var client_handler = function (request, response) {
 
                 // if event wasn't forwarded, warn
                 if (fc == -1) {
-                    response.writeHead(500, {"Content-Type": "application/json"});
-                    response.write("{ 'response': 'false', 'message': 'error: try again later' }\n");
-                    response.end();
-		    return;
+                  response.writeHead(500, {"Content-Type": "application/json"});
+                  response.write("{ 'response': 'false', 'message': 'error: try again later' }\n");
+                  response.end();
+                  return;
                  }
                 // notify user
                 response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
                 response.writeHead(201, {"Content-Type": "application/json"});
-                response.write("{ 'response': 'true', 'message': 'info: event received', 'eventstamp': "+eventstamp+"  }\n");
+                response.write("{ 'response': 'true', 'message': 'info: event received' }\n");
                 response.end();
                 return;
             }
