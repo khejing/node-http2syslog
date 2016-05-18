@@ -16,7 +16,7 @@ var log = function(content) {
 var exception_count = 0;
 // handle exceptions for great udp justice
 process.addListener("uncaughtException", function (err) {
-    log("error: caught an exception - " + err);
+    log("error: caught an exception - " + err.stack);
     if(err.errno === process.ECONNREFUSED){
        log("Will fall back to utilize the udp socket");
        udp = true;
@@ -38,10 +38,10 @@ var forward_event = function(remoteip, content) {
     var logs = obj.Log4js, i = 0;
     for(; i < logs.length; i++){
       // craft header
-      var log = logs[i].LoggingEvent;
-      log.appId = log.logger;
-      delete log.logger;
-      if(logger.log(log.level, assign(log, {host: remoteip})) === -1){
+      var logItem = logs[i].LoggingEvent;
+      logItem.appId = logItem.logger;
+      delete logItem.logger;
+      if(logger.log(logItem.level, assign(logItem, {host: remoteip})) === -1){
         return -1;
       }
     };
