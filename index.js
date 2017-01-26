@@ -71,7 +71,9 @@ var client_handler = function (request, response) {
         var keyrequest;
 
         if(request.method === 'OPTIONS'){
-            response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+            if(request.headers.origin){
+                response.setHeader('Access-Control-Allow-Origin', request.headers.origin);
+            }
             response.setHeader('Access-Control-Allow-Methods', request.headers['access-control-request-method']);
             response.setHeader('Access-Control-Allow-Headers', request.headers['access-control-request-headers']);
             response.statusCode = 200;
