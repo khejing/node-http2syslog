@@ -139,8 +139,8 @@ var privateKey,certificate;
 
 // We might not be provided with proper files
 try {
-	privateKey = fs.readFileSync('privatekey.pem').toString();
-	certificate = fs.readFileSync('certificate.pem').toString();
+	privateKey = fs.readFileSync('/root/cert/formal.key').toString();
+	certificate = fs.readFileSync('/root/cert/formal.crt').toString();
 }catch(e) {
 	log("Improper/Non-existant credential files for starting HTTPS server");
 	return;
