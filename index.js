@@ -1,5 +1,6 @@
 // includes
 var http = require("http"),
+    https = require("https"),
     net = require("net"),
     url = require("url");
     dgram = require('dgram');
@@ -133,22 +134,7 @@ var client_handler = function (request, response) {
 }
 
 // Start listening as HTTP server
-lodge = http.createServer(client_handler).listen(8081);
-
-var privateKey,certificate;
-
-// We might not be provided with proper files
-try {
-	privateKey = fs.readFileSync('/root/cert/formal.key').toString();
-	certificate = fs.readFileSync('/root/cert/formal.crt').toString();
-}catch(e) {
-	log("Improper/Non-existant credential files for starting HTTPS server");
-	return;
-}
-
-var credentials = crypto.createCredentials({key: privateKey, cert: certificate});
+http.createServer(client_handler).listen(8082);
 
 // Start listening as HTTPS server
-var server = http.createServer(client_handler);
-server.setSecure(credentials);
-server.listen(8082);
+https.createServer({key: fs.readFileSync('/root/cert/formal.key'), cert: fs.readFileSync('/root/cert/formal.crt')}, client_handler).listen(8081);
