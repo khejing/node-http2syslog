@@ -141,6 +141,6 @@ http.createServer(client_handler).listen(8082);
 
 // Start listening as HTTPS server
 https.createServer({
-    key: fs.readFileSync(path.join(__dirname, 'cert/log.key'),
-    cert: fs.readFileSync(path.join(__dirname, 'cert/log.crt')
+    key: fs.readFileSync(path.join(__dirname, 'cert/log.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert/log.crt'))
 }, client_handler).listen(8081);
