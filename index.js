@@ -1,6 +1,7 @@
 // includes
 var http = require("http"),
     https = require("https"),
+    path = require('path'),
     net = require("net"),
     url = require("url");
     dgram = require('dgram');
@@ -139,4 +140,7 @@ var client_handler = function (request, response) {
 http.createServer(client_handler).listen(8082);
 
 // Start listening as HTTPS server
-https.createServer({key: fs.readFileSync('/root/cert/formal.key'), cert: fs.readFileSync('/root/cert/formal.crt')}, client_handler).listen(8081);
+https.createServer({
+    key: fs.readFileSync(path.join(__dirname, 'cert/log.key'),
+    cert: fs.readFileSync(path.join(__dirname, 'cert/log.crt')
+}, client_handler).listen(8081);
